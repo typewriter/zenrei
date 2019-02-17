@@ -5,8 +5,12 @@ require 'mongo'
 
 module TokenType
   CLASS_NAME = 10
+  MODULE_NAME = 11
   METHOD_NAME = 20
   VARIABLE_NAME = 30
+  PARAMS_NAME = 31
+  INSTANCE_VARIABLE_NAME = 32
+  GLOBAL_VARIABLE_NAME = 33
 end
 
 class RubyParser
@@ -25,7 +29,7 @@ class RubyParser
       next if sexp.class != Array
 
       if [:var_field, :def, :defs, :class, :module].include? sexp[0]
-        names << [convert_token_type(sexp[0]), extract_name(sexp)]
+        names << extract_name(sexp[0], sexp)
       end
       if sexp[0] == :params
         names += extract_params(sexp)
@@ -35,7 +39,7 @@ class RubyParser
         names += extract_names_from_sexps(sexp)
       end
     }
-    names
+    names.compact
   end
 
   def self.extract_params(sexps)
@@ -44,7 +48,7 @@ class RubyParser
       next unless sexp.class == Array
 
       if [:@ident, :@label].include?(sexp[0])
-        names << [TokenType::VARIABLE_NAME, sexp[1]]
+        names << [TokenType::PARAMS_NAME, sexp[1]]
       end
 
       names += extract_params(sexp)
@@ -53,8 +57,10 @@ class RubyParser
   end
 
   def self.convert_token_type(type)
-    if [:class, :module].include? type
+    if type == :class
       TokenType::CLASS_NAME
+    elsif type == :module
+      TokenType::MODULE_NAME
     elsif [:def, :defs].include? type
       TokenType::METHOD_NAME
     else
@@ -62,16 +68,20 @@ class RubyParser
     end
   end
 
-  def self.extract_name(sexps)
+  def self.extract_name(type, sexps)
     # ちょっとゴリ押し
     sexps.each { |sexp|
       next if sexp.class != Array
 
-      if [:@ident, :@const, :@ivar, :@gvar].include? sexp[0]
-        return sexp[1].gsub(/^\$|^@/, "")
+      if [:@ident, :@const].include? sexp[0]
+        return [convert_token_type(type), sexp[1].gsub(/^\$|^@/, "")]
+      elsif sexp[0] == :@ivar
+        return [TokenType::INSTANCE_VARIABLE_NAME, sexp[1].gsub(/^\$|^@/, "")]
+      elsif sexp[0] == :@gvar
+        return [TokenType::GLOBAL_VARIABLE_NAME, sexp[1].gsub(/^\$|^@/, "")]
       end
       if sexp[0] == :const_ref
-        return sexp[1][1]
+        return [convert_token_type(type), sexp[1][1]]
       end
     }
     nil
