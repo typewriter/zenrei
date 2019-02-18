@@ -1,0 +1,14 @@
+version: '3'
+services:
+  mongo:
+    image: mongo:latest
+    restart: always
+    volumes:
+      - ./db:/data/db
+      - ./mongo:/etc/mongo
+    ports:
+      - "27017:27017"
+    command:
+      - '-f'
+      - '/etc/mongo/mongod.conf'
+
