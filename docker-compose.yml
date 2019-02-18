@@ -11,4 +11,14 @@ services:
     command:
       - '-f'
       - '/etc/mongo/mongod.conf'
-
+  go_api:
+    build: ./api
+    image: golang:latest
+    working_dir: /go/src/api
+    links:
+      - mongo
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./api:/go/src/api
+    command: 'go run main.go'
