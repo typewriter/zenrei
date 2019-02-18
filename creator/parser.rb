@@ -89,7 +89,7 @@ class RubyParser
 end
 
 def register_result(result)
-  @settings ||= YAML.load_file('./database.yml')
+  @settings ||= YAML.load_file('../database.yml')
   @client ||= Mongo::Client.new(@settings['database_url'])
   @collection ||= @client[:names]
 
