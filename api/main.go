@@ -2,6 +2,7 @@ package main
 
 import (
 	"strings"
+	"regexp"
 	"net/http"
 	"github.com/labstack/echo"
 	"github.com/globalsign/mgo"
@@ -43,10 +44,10 @@ func suggest(c echo.Context) error {
 	var results []Suggest
 	_ = countCollection.Find(
 		bson.M{ "$and": []bson.M {
-			bson.M{"name": bson.RegEx{"^" + q, "i"}},
+			bson.M{"name": bson.RegEx{"^" + regexp.QuoteMeta(q), "i"}},
 			bson.M{"type": nil},
 		}},
-	).Sort("-count").Limit(100).All(&results)
+	).Sort("-count").Limit(50).All(&results)
 
 	return c.JSON(http.StatusOK, results)
 }
@@ -59,10 +60,10 @@ func search(c echo.Context) error {
 		var items []Name
 		_ = collection.Find(
 			bson.M{ "$and": []bson.M {
-				bson.M{"name": value},
+				bson.M{"name": bson.RegEx{"^" + regexp.QuoteMeta(value), ""}},
 				bson.M{"filename": bson.M{"$not": bson.RegEx{"test/|spec/", ""}}},
 			}}).
-			Limit(1000).All(&items)
+			Limit(101).All(&items)
 		results[value] = items
 	}
 
