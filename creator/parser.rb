@@ -11,6 +11,7 @@ module TokenType
   PARAMS_NAME = 31
   INSTANCE_VARIABLE_NAME = 32
   GLOBAL_VARIABLE_NAME = 33
+  CLASS_VARIABLE_NAME = 34
 end
 
 class RubyParser
@@ -48,7 +49,7 @@ class RubyParser
       next unless sexp.class == Array
 
       if [:@ident, :@label].include?(sexp[0])
-        names << [TokenType::PARAMS_NAME, sexp[1]]
+        names << [TokenType::PARAMS_NAME, sexp[1].gsub(/:$/, "")]
       end
 
       names += extract_params(sexp)
@@ -74,11 +75,13 @@ class RubyParser
       next if sexp.class != Array
 
       if [:@ident, :@const].include? sexp[0]
-        return [convert_token_type(type), sexp[1].gsub(/^\$|^@/, "")]
+        return [convert_token_type(type), sexp[1].gsub(/^\$|^@|:$/, "")]
       elsif sexp[0] == :@ivar
-        return [TokenType::INSTANCE_VARIABLE_NAME, sexp[1].gsub(/^\$|^@/, "")]
+        return [TokenType::INSTANCE_VARIABLE_NAME, sexp[1].gsub(/^@|:$/, "")]
       elsif sexp[0] == :@gvar
-        return [TokenType::GLOBAL_VARIABLE_NAME, sexp[1].gsub(/^\$|^@/, "")]
+        return [TokenType::GLOBAL_VARIABLE_NAME, sexp[1].gsub(/^\$|:$/, "")]
+      elsif sexp[0] == :@cvar
+        return [TokenType::CLASS_VARIABLE_NAME, sexp[1].gsub(/^@@|:$/, "")]
       end
       if sexp[0] == :const_ref
         return [convert_token_type(type), sexp[1][1]]
