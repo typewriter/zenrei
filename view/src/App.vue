@@ -2,6 +2,7 @@
   <div id="app">
     <Title />
     <SearchBar />
+    <Footer />
   </div>
 </template>
 
@@ -16,6 +17,7 @@ import AsyncComputed from 'vue-async-computed'
 // Other components
 import Title from './components/Title.vue'
 import SearchBar from './components/SearchBar.vue'
+import Footer from './components/Footer.vue'
 
 Vue.use(BootstrapVue)
 Vue.use(AsyncComputed)
@@ -24,7 +26,8 @@ export default {
   name: 'app',
   components: {
     Title,
-    SearchBar
+    SearchBar,
+    Footer
   }
 }
 </script>
