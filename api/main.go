@@ -32,8 +32,8 @@ func main() {
 	collection       = session.DB("zenrei").C("names")
 	countCollection  = session.DB("zenrei").C("counters")
 
-	echo.GET("/search", search)
-	echo.GET("/suggest", suggest)
+	echo.GET("/v1/search", search)
+	echo.GET("/v1/suggest", suggest)
 
 	echo.Logger.Fatal(echo.Start(":8080"))
 }

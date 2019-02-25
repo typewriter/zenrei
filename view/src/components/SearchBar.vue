@@ -53,12 +53,12 @@ export default {
   asyncComputed: {
     async results () {
       const keyword = this.debounceKeyword
-      const res = await Axios.get('/search?q=' + keyword)
+      const res = await Axios.get('/v1/search?q=' + keyword)
       return res.data[keyword] || []
     },
     async suggests () {
       const keyword = this.debounceKeyword
-      const res = await Axios.get('/suggest?q=' + keyword)
+      const res = await Axios.get('/v1/suggest?q=' + keyword)
       return res.data || []
     }
   }
