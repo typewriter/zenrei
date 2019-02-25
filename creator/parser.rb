@@ -91,6 +91,14 @@ class RubyParser
   end
 end
 
+def delete_all
+  @settings ||= YAML.load_file('../database.yml')
+  @client ||= Mongo::Client.new(@settings['database_url'])
+  @collection ||= @client[:names]
+
+  @collection.delete_many({})
+end
+
 def register_result(result)
   @settings ||= YAML.load_file('../database.yml')
   @client ||= Mongo::Client.new(@settings['database_url'])
@@ -102,6 +110,11 @@ end
 
 BASE_DIR=File.dirname(__FILE__)
 TARGET_DIR="#{BASE_DIR}/data"
+
+
+STDERR.puts "Collection items are removed. Are you sure?"
+STDIN.readline
+delete_all
 
 Dir::glob("#{TARGET_DIR}/**/*.rb") { |filename|
   next unless File.file?(filename)
