@@ -3,7 +3,8 @@
     <b-card bg-variant="light">
       <div class="result-card">
         <strong>{{result.Name}}</strong> ({{typeMap[result.Type]}})<br />
-        <a :href="'https://github.com/' + result.Repository">{{result.Repository}}</a>: <a :href="'https://github.com/' + result.Repository + '/blob/master/' + result.Filename" :title="result.Filename">{{result.Filename}}</a>
+        <a :href="'https://github.com/' + result.Repository">{{result.Repository}}</a>: {{result.Filename}}
+        <!-- <a :href="'https://github.com/' + result.Repository">{{result.Repository}}</a>: <a :href="'https://github.com/' + result.Repository + '/blob/master/' + result.Filename" :title="result.Filename">{{result.Filename}}</a> -->
       </div>
     </b-card>
   </div>
@@ -12,7 +13,7 @@
 <script>
 export default {
   name: 'Result',
-  props: ['result'],
+  props: ['result', 'keyword'],
   data: function () {
     return {
       typeMap: {
