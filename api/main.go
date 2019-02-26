@@ -1,12 +1,14 @@
 package main
 
 import (
+	"database/sql"
 	"strings"
 	"regexp"
 	"net/http"
 	"github.com/labstack/echo"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type Name struct {
@@ -22,8 +24,16 @@ type Suggest struct {
 	Count      int    `bson:"count"`
 }
 
+type Synonym struct {
+	Synset string
+  Lang   string
+	Name   string
+}
+
 var collection *mgo.Collection
 var countCollection *mgo.Collection
+
+var wordnet *sql.DB
 
 func main() {
 	echo := echo.New()
@@ -32,9 +42,12 @@ func main() {
 	collection       = session.DB("zenrei").C("names")
 	countCollection  = session.DB("zenrei").C("counters")
 
+	wordnet, _ = sql.Open("sqlite3", "./wnjpn.db")
+
 	echo.GET("/v1/search", search)
 	echo.GET("/v1/suggest", suggest)
 	echo.GET("/v1/counter", counter)
+	echo.GET("/v1/synonym", synonym)
 
 	echo.Logger.Fatal(echo.Start(":8080"))
 }
@@ -83,5 +96,20 @@ func search(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, results)
+}
+
+func synonym(c echo.Context) error {
+  q := c.QueryParam("q")
+
+	rows, _ := wordnet.Query("select s2.synset, w2.lang, w2.lemma from word inner join sense on sense.wordid = word.wordid inner join sense s2 on s2.synset = sense.synset inner join word w2 on w2.wordid = s2.wordid where word.lemma = ?", q)
+	// rows, _ := wordnet.Query("select synset.synset from word inner join sense on sense.wordid = word.wordid inner join synset on synset.synset = sense.synset where lemma = ?", q)
+	defer rows.Close()
+	var synsets []Synonym
+	for rows.Next() {
+		var s Synonym
+		rows.Scan(&s.Synset, &s.Lang, &s.Name)
+		synsets = append(synsets, s)
+  }
+	return c.JSON(http.StatusOK, synsets)
 }
 
