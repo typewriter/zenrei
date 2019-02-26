@@ -34,6 +34,7 @@ func main() {
 
 	echo.GET("/v1/search", search)
 	echo.GET("/v1/suggest", suggest)
+	echo.GET("/v1/counter", counter)
 
 	echo.Logger.Fatal(echo.Start(":8080"))
 }
@@ -48,6 +49,20 @@ func suggest(c echo.Context) error {
 			bson.M{"type": nil},
 		}},
 	).Sort("-count").Limit(50).All(&results)
+
+	return c.JSON(http.StatusOK, results)
+}
+
+func counter(c echo.Context) error {
+  q := strings.Split(c.QueryParam("q"), ",")
+
+	var results []Suggest
+	_ = countCollection.Find(
+		bson.M{ "$and": []bson.M {
+			bson.M{"name": bson.M{"$in": q}},
+			bson.M{"type": nil},
+		}},
+	).All(&results)
 
 	return c.JSON(http.StatusOK, results)
 }
