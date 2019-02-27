@@ -2,9 +2,9 @@
   <b-container fluid>
     <b-row class="mt-2">
       <b-col cols="12">
-        <b-form inline>
+        <b-form v-on:submit.prevent inline>
           <label for="keyword">クラス名/メソッド名/変数名:</label>&nbsp;
-          <b-input v-model="keyword" id="keyword" size="40" placeholder="certificate" />
+          <b-form-input v-model="keyword" id="keyword" size="40" placeholder="certificate" />
         </b-form>
       </b-col>
     </b-row>
