@@ -20,3 +20,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+div {
+  overflow-wrap: anywhere;
+}
+</style>
+

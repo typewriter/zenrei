@@ -1,6 +1,6 @@
 <template>
   <b-container classs="footer" fluid>
-    <b-row class="bg-light pt-2 pb-2">
+    <b-row class="bg-light mt-2">
       <b-col cols="12">
         <b-badge variant="white">Developed by </b-badge> typewriter<br>
         <b-badge variant="white">Website</b-badge>&nbsp;<a href="https://www.nyamikan.net">にゃみかん (www.nyamikan.net)</a><br>

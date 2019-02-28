@@ -1,21 +1,21 @@
 <template>
   <b-container fluid>
-    <b-row class="mt-2">
+    <b-row class="mt-1">
       <b-col cols="12">
         <b-form v-on:submit.prevent inline>
-          <label for="keyword">クラス名/メソッド名/変数名:</label>&nbsp;
-          <b-form-input v-model="keyword" id="keyword" size="40" placeholder="certificate" />
+          <label for="keyword">調べたいクラス/メソッド/変数名:</label>&nbsp;
+          <b-form-input v-model="keyword" id="keyword" size="60" placeholder="certificate" />
         </b-form>
       </b-col>
     </b-row>
-    <b-row class="mt-4">
-      <b-col cols="4" xl="2" class="mt-2">
+    <b-row class="mt-1">
+      <b-col cols="5" md="4" xl="2" class="mt-1">
         <p><strong>使用頻度</strong>&nbsp;<b-spinner variant="secondary" type="grow" small v-if="suggesting" /><br><span class="small text-muted">頻度順，前方一致</span></p>
         <!-- eslint-disable-next-line -->
         <Suggest v-for="suggest in suggests" v-bind:suggest="suggest" v-bind:keyword="debounceKeyword" @use="useName" />
         <p v-if="suggests && suggests.length <= 0">見つかりませんでした．</p>
       </b-col>
-      <b-col cols="8" xl="6" class="mt-2">
+      <b-col cols="7" md="8" xl="6" class="mt-1">
         <p><strong>各単語ごとの類語</strong>&nbsp;<b-spinner variant="secondary" type="grow" small v-if="synonyming" /><br><span class="small text-muted">日本語WordNetによる</span></p>
         <b-container fluid>
           <b-row>

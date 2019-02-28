@@ -1,7 +1,7 @@
 <template>
   <div class="result">
     <b-card bg-variant="light">
-      <div class="result-card">
+      <div class="result-card small">
         <strong>{{result.Name}}</strong> ({{typeMap[result.Type]}})<br />
         <a :href="'https://github.com/' + result.Repository">{{result.Repository}}</a>: {{result.Filename}}
         <!-- <a :href="'https://github.com/' + result.Repository">{{result.Repository}}</a>: <a :href="'https://github.com/' + result.Repository + '/blob/master/' + result.Filename" :title="result.Filename">{{result.Filename}}</a> -->
@@ -35,5 +35,8 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.card-body {
+  padding: 0.25rem;
 }
 </style>
