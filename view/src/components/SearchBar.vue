@@ -24,8 +24,8 @@
           </b-row>
         </b-container>
       </b-col>
-      <b-col cols="12" xl="4" class="mt-2">
-        <p><strong>使用箇所 <span v-if="results && results.length > 0 && results.length > 100">(100〜 件)</span><span v-if="results && results.length > 0 && results.length <= 100">({{results.length}} 件)</span></strong>&nbsp;<b-spinner variant="secondary" type="grow" small v-if="resulting" /><br><span class="small text-muted">辞書順，前各単語ごとの方一致，大文字小文字を区別</span></p>
+      <b-col cols="12" xl="4" class="mt-1">
+        <p><strong>使用箇所 <span v-if="results && results.length > 0 && results.length > 100">(100〜 件)</span><span v-if="results && results.length > 0 && results.length <= 100">({{results.length}} 件)</span></strong>&nbsp;<b-spinner variant="secondary" type="grow" small v-if="resulting" /><br><span class="small text-muted">辞書順，前方一致，大文字小文字を区別</span></p>
         <!-- eslint-disable-next-line -->
         <Result v-for="result in results" v-bind:result="result" v-bind:keyword="debounceKeyword" />
         <p v-if="results && results.length <= 0">{{debounceKeyword}} にマッチする結果が見つかりませんでした．</p>
@@ -93,6 +93,8 @@ export default {
       const keywords = this.debounceKeyword.toLowerCase().split('_')
 
       for (let keyword of keywords) {
+        if (keyword === "") { continue }
+
         const adjectiveLemma = lemmatizer.adjective(keyword)
         const nounLemma = lemmatizer.noun(keyword)
         const verbLemma = lemmatizer.verb(keyword)
