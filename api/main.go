@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
+	"github.com/aaaton/golem"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -34,6 +35,7 @@ var collection *mgo.Collection
 var countCollection *mgo.Collection
 
 var wordnet *sql.DB
+var lemmatizer *golem.Lemmatizer
 
 func main() {
 	echo := echo.New()
@@ -43,6 +45,7 @@ func main() {
 	countCollection  = session.DB("zenrei").C("counters")
 
 	wordnet, _ = sql.Open("sqlite3", "./wnjpn.db")
+	lemmatizer, _ = golem.New("english")
 
 	echo.GET("/v1/search", search)
 	echo.GET("/v1/suggest", suggest)
@@ -100,8 +103,9 @@ func search(c echo.Context) error {
 
 func synonym(c echo.Context) error {
   q := c.QueryParam("q")
+	lemma := lemmatizer.Lemma(q)
 
-	rows, _ := wordnet.Query("select s2.synset, w2.lang, w2.lemma from word inner join sense on sense.wordid = word.wordid inner join sense s2 on s2.synset = sense.synset inner join word w2 on w2.wordid = s2.wordid where word.lemma = ?", q)
+	rows, _ := wordnet.Query("select s2.synset, w2.lang, w2.lemma from word inner join sense on sense.wordid = word.wordid inner join sense s2 on s2.synset = sense.synset inner join word w2 on w2.wordid = s2.wordid where word.lemma = ?", lemma)
 	// rows, _ := wordnet.Query("select synset.synset from word inner join sense on sense.wordid = word.wordid inner join synset on synset.synset = sense.synset where lemma = ?", q)
 	defer rows.Close()
 	var synsets []Synonym
