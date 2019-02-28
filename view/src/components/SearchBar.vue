@@ -40,7 +40,6 @@ import _ from 'lodash'
 import Result from './Result.vue'
 import Suggest from './Suggest.vue'
 import SynonymKey from './SynonymKey.vue'
-import lemmatizer from 'wink-lemmatizer'
 
 export default {
   name: 'SearchBar',
@@ -95,15 +94,7 @@ export default {
       for (let keyword of keywords) {
         if (keyword === "") { continue }
 
-        const adjectiveLemma = lemmatizer.adjective(keyword)
-        const nounLemma = lemmatizer.noun(keyword)
-        const verbLemma = lemmatizer.verb(keyword)
-
-        var lemmas = []
-        if (adjectiveLemma !== keyword) { lemmas.push(adjectiveLemma) }
-        if (nounLemma !== keyword) { lemmas.push(nounLemma) }
-        if (verbLemma !== keyword) { lemmas.push(verbLemma) }
-        if (lemmas.length === 0) { lemmas.push(keyword) }
+        var lemmas = [keyword]
 
         var result = {}
         for (let lemma of lemmas) {
