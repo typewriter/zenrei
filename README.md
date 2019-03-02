@@ -120,3 +120,21 @@ Synset | String | synonym group name
 Lang | String | language ("eng" or "jpn")
 Name | String | synonym name
 
+## Install
+
+API server
+
+1. Download `wnjpn.db`(Japanese WordNet and English WordNet in an sqlite3 database) from http://compling.hss.ntu.edu.sg/wnja/ to `api/`
+1. Rename `mongo/mongod.conf.example` to `mongo/mongod.conf`
+2. Rename `database.yml.example` to `database.yml` (used by scripts in `creator/`)
+3. Start servers: Run `docker-compose up`
+4. Create collections: Run `creator/retreiver.rb`, `creator/parser.rb` and `creator/indexer.rb` with bundler.
+5. Try access: http://localhost:8080/v1/search?q=test
+
+View server (for development)
+
+1. Change URL in `view/src/components/SearchBar.vue` (prefix `http://localhost:8080/`)
+2. Change directory to `view/`
+3. Run `npm run serve`
+4. Try access: http://localhost:8081/
+
