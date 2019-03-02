@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"net/http"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
 	"github.com/aaaton/golem"
@@ -39,6 +40,7 @@ var lemmatizer *golem.Lemmatizer
 
 func main() {
 	echo := echo.New()
+	echo.Use(middleware.CORS())
 
 	session, _ := mgo.Dial("mongo")
 	collection       = session.DB("zenrei").C("names")

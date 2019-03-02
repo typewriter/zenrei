@@ -14,6 +14,7 @@ services:
   go_api:
     build: ./api
     image: golang:latest
+    restart: always
     working_dir: /go/src/api
     links:
       - mongo

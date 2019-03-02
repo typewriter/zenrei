@@ -1,6 +1,7 @@
 FROM golang:latest
 
 RUN go get -u github.com/labstack/echo && \
+    go get -u github.com/dgrijalva/jwt-go && \
     go get -u github.com/globalsign/mgo && \
     go get -u github.com/mattn/go-sqlite3 && \
     go get -u github.com/aaaton/golem
