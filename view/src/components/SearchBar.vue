@@ -4,7 +4,7 @@
       <b-col cols="12">
         <b-form v-on:submit.prevent inline>
           <label for="keyword">調べたいクラス/メソッド/変数名:</label>&nbsp;
-          <b-form-input v-model="keyword" id="keyword" size="60" placeholder="certificate" />
+          <b-form-input v-model="keyword" id="keyword" size="60" placeholder="certificate" ref="keyword" />
         </b-form>
       </b-col>
     </b-row>
@@ -45,6 +45,9 @@ export default {
   name: 'SearchBar',
   data: function () {
     return { keyword: '', debounceKeyword: '', suggesting: false, synonyming: false, resulting: false }
+  },
+  mounted () {
+    this.$refs.keyword.focus();
   },
   components: {
     Result: Result,
