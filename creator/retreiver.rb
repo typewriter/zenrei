@@ -2,9 +2,16 @@
 
 require 'json'
 
+if ARGV.size < 1
+  STDERR.puts "./retreiver.rb LANGUAGE"
+  exit
+end
+
+LANG=ARGV[0]
+
 SLEEP_INTERVAL = 120
 BASE_DIR = File.dirname(__FILE__)
-WORKING_DIR = "#{BASE_DIR}/data"
+WORKING_DIR = "#{BASE_DIR}/#{LANG}"
 Dir::mkdir(WORKING_DIR) if !Dir.exists?(WORKING_DIR)
 
 def update_repository_list
@@ -14,7 +21,7 @@ def update_repository_list
     print "page #{page_index}: "
 
     #url = "https://api.github.com/search/repositories?q=stars%3A>1&sort=stars&order=desc&page=#{page_index}"
-    url = "https://api.github.com/search/repositories?q=language%3ARuby&sort=stars&order=desc&page=#{page_index}"
+    url = "https://api.github.com/search/repositories?q=language%3A#{LANG}&sort=stars&order=desc&page=#{page_index}"
     repos = JSON.parse(`curl "#{url}"`)
 
     break if !repos || !repos["items"]
