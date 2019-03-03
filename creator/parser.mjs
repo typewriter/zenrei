@@ -18,7 +18,7 @@ function extractParams(params, results) {
   });
 }
 
-function traverseNode(node, results) {
+function traverseNode(node, results, parentNode) {
   console.log(node);
   if (node instanceof Array) {
     node.forEach(n => traverseNode(n, results));
@@ -53,6 +53,13 @@ function traverseNode(node, results) {
   if (node.declarations) {
     traverseNode(node.declarations, results);
   }
+  if (node.declaration) {
+    traverseNode(node.declaration, results);
+  }
+  if (node.type === 'MemberExpression' && node.property &&
+      parentNode && parentNode.type === 'AssignmentExpression') {
+    results.push({ type: 'variable', name: node.property.name });
+  }
   if (node.type === 'VariableDeclarator') {
     if (node.id.name) {
       results.push({ type: 'variable', name: node.id.name });
@@ -65,7 +72,7 @@ function traverseNode(node, results) {
     traverseNode(node.consequent, results);
   }
   if (node.left) {
-    traverseNode(node.left, results);
+    traverseNode(node.left, results, node);
   }
   if (node.right) {
     traverseNode(node.right, results);
@@ -79,6 +86,12 @@ function traverseNode(node, results) {
   if (node.value) {
     traverseNode(node.value, results);
   }
+  if (node.type === 'ClassDeclaration' && node.id) {
+    results.push({ type: 'class', name: node.id.name });
+  }
+  if (node.type === 'ClassMethod' && node.key) {
+    results.push({ type: 'static method', name: node.key.name });
+  }
   if (node.type === 'FunctionDeclaration' && node.id) {
     results.push({ type: 'method', name: node.id.name });
   }
@@ -87,7 +100,7 @@ function traverseNode(node, results) {
   }
 }
 
-const node = parser.parse(source).program.body;
+const node = parser.parse(source, { sourceType: 'unambiguous' }).program.body;
 var results = [];
 traverseNode(node, results);
 console.log(results);
