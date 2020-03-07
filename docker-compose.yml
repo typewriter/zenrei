@@ -6,8 +6,8 @@ services:
     volumes:
       - ./db:/data/db
       - ./mongo:/etc/mongo
-    ports:
-      - "27017:27017"
+    expose:
+      - "27017"
     command:
       - '-f'
       - '/etc/mongo/mongod.conf'
@@ -15,11 +15,8 @@ services:
     build: ./api
     image: golang:latest
     restart: always
-    working_dir: /go/src/api
     links:
       - mongo
     ports:
       - "8080:8080"
-    volumes:
-      - ./api:/go/src/api
-    command: 'go run main.go'
+    command: './api'

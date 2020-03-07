@@ -10,6 +10,7 @@ import (
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
 	"github.com/aaaton/golem"
+	"github.com/aaaton/golem/dicts/en"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -47,7 +48,7 @@ func main() {
 	countCollection  = session.DB("zenrei").C("counters")
 
 	wordnet, _ = sql.Open("sqlite3", "./wnjpn.db")
-	lemmatizer, _ = golem.New("english")
+	lemmatizer, _ = golem.New(en.New())
 
 	echo.GET("/v1/search", search)
 	echo.GET("/v1/suggest", suggest)
