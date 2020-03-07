@@ -18,7 +18,6 @@ services:
       - mongo
     expose:
       - "8080"
-    command: './api'
   nginx:
     build: ./view
     restart: always
