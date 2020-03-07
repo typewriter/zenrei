@@ -11,12 +11,18 @@ services:
     command:
       - '-f'
       - '/etc/mongo/mongod.conf'
-  go_api:
+  api:
     build: ./api
-    image: golang:latest
     restart: always
     links:
       - mongo
-    ports:
-      - "8080:8080"
+    expose:
+      - "8080"
     command: './api'
+  nginx:
+    build: ./view
+    restart: always
+    links:
+      - api
+    ports:
+      - "8080:80"
